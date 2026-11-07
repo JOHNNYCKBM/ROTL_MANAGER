@@ -1,0 +1,66 @@
+
+name: Codex assistant
+
+on:
+  workflow_dispatch:
+    inputs:
+      task:
+        description: "Tâche à exécuter dans ROTL_MANAGER"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: codex-assistant
+  cancel-in-progress: false
+
+jobs:
+  codex:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Run Codex
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          permission-profile: ":workspace"
+          prompt: |
+            Tu interviens dans le dépôt ROTL_MANAGER.
+
+            Tâche demandée :
+            ${{ inputs.task }}
+
+            Règles :
+            - Analyse d'abord l'architecture existante.
+            - Respecte les conventions et la structure du projet.
+            - Applique Clean Code, SOLID et les bonnes pratiques de sécurité.
+            - Modifie uniquement les fichiers nécessaires.
+            - N'expose aucun secret.
+            - Exécute les tests disponibles.
+            - Ne modifie jamais directement la branche main.
+            - Ne fusionne aucune Pull Request.
+            - Explique les changements et les éventuels blocages.
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ github.token }}
+          branch: codex/automated-change-${{ github.run_id }}
+          base: main
+          commit-message: "chore(codex): automated update"
+          title: "Proposition de modifications Codex"
+          body: |
+            Modifications préparées par Codex.
+            Vérifier le code et les tests avant toute fusion.
+          delete-branch: true
