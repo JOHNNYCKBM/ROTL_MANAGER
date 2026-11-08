@@ -82,3 +82,34 @@ Utiliser le jeton retourné dans l'en-tête `Authorization: Bearer <accessToken>
 - Limitation de débit sur inscription et connexion, politique de verrouillage et réponses d'erreur normalisées.
 
 La migration V2 ajoute les colonnes nécessaires aux demandes et une table de refresh tokens préparatoire ; les routes de refresh/logout ne sont pas encore exposées.
+
+
+## Initialisation du premier Super-administrateur
+
+L'endpoint de bootstrap est à usage unique :
+
+```http
+POST /api/v1/setup/initial-super-admin
+X-Setup-Token: <secret-configure-hors-du-depot>
+Content-Type: application/json
+
+{
+  "companyName": "ROTL SARL",
+  "firstName": "Prénom",
+  "lastName": "Nom",
+  "email": "admin@exemple.cd",
+  "password": "UnePhraseDePasseLongue!"
+}
+```
+
+Avant de démarrer l'application, configurez `BOOTSTRAP_TOKEN` avec une valeur aléatoire forte, uniquement dans l'environnement du serveur. Exemple PowerShell pour la session courante :
+
+```powershell
+$bytes = New-Object byte[] 48
+[System.Security.Cryptography.RandomNumberGenerator]::Fill($bytes)
+$env:BOOTSTRAP_TOKEN = [Convert]::ToBase64String($bytes)
+```
+
+Le token doit être transmis dans l'en-tête `X-Setup-Token`. Le serveur compare le secret en temps constant, verrouille les tentatives concurrentes au niveau PostgreSQL et refuse toute nouvelle initialisation si un rôle SUPER_ADMIN existe déjà. L'opération crée l'entreprise, active CDF et USD (CDF par défaut), crée le compte actif et lui attribue SUPER_ADMIN. La transaction est atomique.
+
+Après la réussite, retirez immédiatement `BOOTSTRAP_TOKEN` de l'environnement et redémarrez le service. L'endpoint restera alors inutilisable. Ne transmettez jamais le secret dans un ticket, un dépôt Git ou une capture d'écran.
