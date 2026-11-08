@@ -42,7 +42,9 @@ CREATE TABLE users (
 CREATE TABLE roles (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), code VARCHAR(30) NOT NULL UNIQUE, name VARCHAR(80) NOT NULL, scope VARCHAR(20) NOT NULL CHECK (scope IN ('GLOBAL','STORE')));
 CREATE TABLE permissions (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), code VARCHAR(100) NOT NULL UNIQUE, description TEXT);
 CREATE TABLE role_permissions (role_id UUID NOT NULL REFERENCES roles(id), permission_id UUID NOT NULL REFERENCES permissions(id), PRIMARY KEY(role_id, permission_id));
-CREATE TABLE user_roles (user_id UUID NOT NULL REFERENCES users(id), role_id UUID NOT NULL REFERENCES roles(id), store_id UUID REFERENCES stores(id), PRIMARY KEY(user_id, role_id, store_id));
+CREATE TABLE user_roles (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), user_id UUID NOT NULL REFERENCES users(id), role_id UUID NOT NULL REFERENCES roles(id), store_id UUID REFERENCES stores(id));
+CREATE UNIQUE INDEX uq_user_role_global ON user_roles(user_id, role_id) WHERE store_id IS NULL;
+CREATE UNIQUE INDEX uq_user_role_store ON user_roles(user_id, role_id, store_id) WHERE store_id IS NOT NULL;
 CREATE TABLE account_requests (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id),
   requested_identity JSONB NOT NULL, status VARCHAR(20) NOT NULL DEFAULT 'PENDING' CHECK (status IN ('PENDING','APPROVED','REJECTED')),
@@ -135,7 +137,7 @@ CREATE TABLE payments (
   payment_method VARCHAR(30) NOT NULL, currency_code CHAR(3) NOT NULL REFERENCES currencies(code),
   amount NUMERIC(19,4) NOT NULL CHECK (amount > 0), sale_currency_amount NUMERIC(19,4) NOT NULL CHECK (sale_currency_amount > 0),
   exchange_rate NUMERIC(19,8), reference VARCHAR(120), paid_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  CHECK ((exchange_rate IS NULL AND currency_code = (SELECT currency_code FROM sales WHERE sales.id = sale_id)) OR exchange_rate > 0)
+  CHECK (exchange_rate IS NULL OR exchange_rate > 0)
 );
 CREATE TABLE cash_movements (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(), cash_session_id UUID NOT NULL REFERENCES cash_sessions(id),
