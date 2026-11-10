@@ -1,0 +1,52 @@
+.success-card {
+  text-align: center;
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.success-icon {
+  color: #ed1724;
+  margin-bottom: 25px;
+}
+
+.success-card h2 {
+  margin-bottom: 15px;
+  font-size: 21px;
+}
+
+.success-card > p {
+  color: #bbb;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.pending-notice {
+  display: flex;
+  text-align: left;
+  align-items: flex-start;
+  gap: 12px;
+  background: rgba(237,23,36,.1);
+  border: 1px solid rgba(237,23,36,.3);
+  padding: 16px;
+  border-radius: 8px;
+  margin: 25px 0;
+  color: #ed1724;
+}
+
+.pending-notice strong {
+  font-size: 12px;
+}
+
+.pending-notice p {
+  color: #bbb;
+  font-size: 11px;
+  line-height: 1.6;
+  margin-top: 8px;
+}
+
+.success-link {
+  margin-top: 5px;
+}
