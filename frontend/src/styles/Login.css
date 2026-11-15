@@ -251,3 +251,69 @@
     display: none;
   }
 }
+
+/* ROTL_BACKGROUND_IMAGE_V2 */
+
+.auth-page {
+    background-image:
+        linear-gradient(
+            90deg,
+            rgba(3, 5, 10, 0.02),
+            rgba(3, 5, 10, 0.12)
+        ),
+        url('../assets/rotl-background.png');
+
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-color: #080a10;
+}
+
+/* Le logo ROTL est deja integre au background */
+.auth-page > .brand {
+    display: none;
+}
+
+/* Suppression de l'ancien quadrillage */
+.auth-page::before {
+    display: none;
+}
+
+@media (max-width: 700px) {
+    .auth-page {
+        background-position: 55% center;
+        background-attachment: scroll;
+    }
+}
+
+
+/* ROTL_BACKGROUND_FIT_V3 */
+
+.auth-page {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100svh;
+
+    padding: 35px 9%;
+
+    background-size: 100% 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.auth-page > .brand {
+    display: none;
+}
+
+.auth-page::before {
+    display: none;
+}
+
+@media (max-width: 700px) {
+    .auth-page {
+        padding: 25px 16px;
+        background-size: cover;
+        background-position: center;
+    }
+}
