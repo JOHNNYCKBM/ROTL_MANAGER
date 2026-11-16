@@ -4,3 +4,6 @@ frontend/.env
 frontend/.env.*
 !frontend/.env.example
 
+/frontend/src/styles/Login.css.backup
+/frontend/src/styles/Login.css.before-background.bak
+/frontend/src/styles/Login.css.before-fit.bak
