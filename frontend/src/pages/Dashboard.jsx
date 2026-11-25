@@ -54,6 +54,43 @@ function extractData(response) {
   return response?.data ?? response ?? {};
 }
 
+const PREVIEW_MODE = import.meta.env.VITE_ENABLE_DASHBOARD_PREVIEW === 'true';
+const PREVIEW_USER = {
+  firstName: 'Administrateur',
+  lastName: 'ROTL',
+  email: 'admin@rotl.local',
+  role: 'SUPER_ADMIN',
+  companyName: 'ROTL Entreprise',
+  status: 'Aperçu local',
+};
+const PREVIEW_OVERVIEW = {
+  kpis: {
+    todaySales: { value: 1250000, currency: 'CDF' },
+    productsInStock: 248,
+    activeUsers: 12,
+    revenue: { value: 8750000, currency: 'CDF' },
+  },
+  sales: {
+    series: [
+      { label: 'Lun', total: 850000 },
+      { label: 'Mar', total: 1120000 },
+      { label: 'Mer', total: 940000 },
+      { label: 'Jeu', total: 1380000 },
+      { label: 'Ven', total: 1210000 },
+      { label: 'Sam', total: 1650000 },
+      { label: 'Dim', total: 1250000 },
+    ],
+  },
+  stock: { available: 210, lowStock: 28, outOfStock: 10 },
+  recentActivities: [
+    { id: 1, description: 'Vente enregistrée — Caisse 01', createdAt: 'Aujourd’hui, 09:42' },
+    { id: 2, description: 'Nouveau produit ajouté au catalogue', createdAt: 'Aujourd’hui, 09:15' },
+    { id: 3, description: 'Mise à jour du stock effectuée', createdAt: 'Aujourd’hui, 08:56' },
+    { id: 4, description: 'Session de caisse ouverte', createdAt: 'Aujourd’hui, 08:30' },
+    { id: 5, description: 'Nouvel utilisateur ajouté', createdAt: 'Hier, 16:20' },
+  ],
+};
+
 function Sidebar({ user, collapsed, onToggle, onLogout, activePath }) {
   const company = user?.company?.name ?? user?.companyName ?? user?.company?.legalName ?? 'Entreprise';
   const name = [user?.firstName, user?.lastName].filter(Boolean).join(' ') || user?.fullName || user?.email || 'Utilisateur';
@@ -156,6 +193,13 @@ function Dashboard() {
   const logout = useCallback(() => { localStorage.removeItem('rotl_access_token'); sessionStorage.removeItem('rotl_access_token'); navigate('/login', { replace: true }); }, [navigate]);
 
   useEffect(() => {
+    if (!token && PREVIEW_MODE) {
+      setUser(PREVIEW_USER);
+      setOverview(PREVIEW_OVERVIEW);
+      setError('Mode aperçu Frontend : les données affichées sont fictives et ne proviennent pas du Backend.');
+      setLoading(false);
+      return;
+    }
     if (!token) return;
     let active = true;
     async function load() {
@@ -181,7 +225,7 @@ function Dashboard() {
     return () => { active = false; };
   }, [token, period, logout]);
 
-  if (!token) return <Navigate to="/login" replace />;
+  if (!token && !PREVIEW_MODE) return <Navigate to="/login" replace />;
   const data = overview ?? {};
   const kpis = data.kpis ?? data.metrics ?? {};
   const sales = data.sales ?? {};
