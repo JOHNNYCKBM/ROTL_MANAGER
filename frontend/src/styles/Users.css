@@ -164,3 +164,9 @@
  .users-modal-actions{flex-wrap:wrap}
  .users-sync-note{justify-content:flex-start}
 }
+
+
+.users-access-denied{min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:28px;text-align:center;background:var(--dash-panel);border:1px solid var(--dash-border);border-radius:14px;color:var(--dash-muted)}
+.users-access-denied svg{color:var(--rotl-red)}
+.users-access-denied h1{font-size:20px;color:var(--dash-text)}
+.users-access-denied p{max-width:450px;font-size:11px;line-height:1.6}
