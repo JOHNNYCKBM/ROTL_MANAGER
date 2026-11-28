@@ -51,23 +51,19 @@ function Sidebar({ user, collapsed, onToggle, onLogout, activePath }) {
     <aside className={`rotl-sidebar ${collapsed ? 'is-collapsed' : ''}`}>
       <div className="sidebar-brand">
         <a href="/dashboard" className="rotl-logo" aria-label="ROTL Manager">
-          <span className="logo-mark">R</span>
           <span className="logo-word"><b>ROTL</b><small>MANAGER</small></span>
         </a>
         <button className="sidebar-collapse" onClick={onToggle} aria-label="Réduire le menu"><PanelLeftClose size={19}/></button>
       </div>
 
       <div className="sidebar-user">
-        <div className="user-avatar">{getInitials(user)}</div>
+        <div className="user-avatar">{avatarUrl ? <img src={avatarUrl} alt={name}/> : getInitials(user)}</div>
         <div className="user-meta">
           <strong>{name}</strong>
           <span><ShieldCheck size={12}/> {role}</span>
         </div>
+        <div className="sidebar-company-name">{company}</div>
       </div>
-
-      <button className="company-switch" type="button">
-        <Building2 size={17}/><span>{company}</span><ChevronDown size={15}/>
-      </button>
       <div className="sidebar-divider"/>
 
       <nav className="sidebar-nav" aria-label="Navigation principale">
