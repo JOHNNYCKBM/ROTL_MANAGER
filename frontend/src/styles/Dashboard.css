@@ -72,3 +72,11 @@
   .theme-control{gap:5px}
   .topbar-profile span{width:27px;height:27px}
 }
+
+
+.topbar-profile-wrap{position:relative}
+.topbar-profile{border:0;background:transparent;padding:2px}
+.topbar-profile-menu{position:absolute;right:0;top:calc(100% + 12px);z-index:45;min-width:180px;padding:11px;background:var(--dash-panel);border:1px solid var(--dash-border);border-radius:11px;box-shadow:var(--dash-shadow);display:flex;flex-direction:column;gap:6px}
+.topbar-profile-menu strong{font-size:11px;color:var(--dash-text)}
+.topbar-profile-menu small{font-size:9px;color:var(--dash-muted);padding-bottom:7px;border-bottom:1px solid var(--dash-border)}
+.topbar-profile-menu button{display:flex;align-items:center;gap:7px;border:0;background:transparent;color:var(--rotl-red);font-size:10px;font-weight:700;padding:7px 3px;text-align:left}
