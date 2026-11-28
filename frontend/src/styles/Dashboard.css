@@ -80,3 +80,44 @@
 .topbar-profile-menu strong{font-size:11px;color:var(--dash-text)}
 .topbar-profile-menu small{font-size:9px;color:var(--dash-muted);padding-bottom:7px;border-bottom:1px solid var(--dash-border)}
 .topbar-profile-menu button{display:flex;align-items:center;gap:7px;border:0;background:transparent;color:var(--rotl-red);font-size:10px;font-weight:700;padding:7px 3px;text-align:left}
+
+
+/* Shared shell alignment with the ROTL reference layout */
+.rotl-sidebar{width:246px;flex-basis:246px;padding:0 10px 15px}
+.sidebar-brand{height:70px;min-height:70px;justify-content:center;padding:0;border-bottom:1px solid var(--dash-border)}
+.rotl-logo{justify-content:center}
+.logo-mark{display:none}
+.logo-word{line-height:.96;letter-spacing:0;align-items:flex-start}
+.logo-word b{font-size:34px;line-height:.92;letter-spacing:-1.5px}
+.logo-word small{font-size:17px;letter-spacing:-.5px;text-align:left}
+.sidebar-collapse{display:none}
+.sidebar-user{display:flex;flex-direction:column;align-items:center;gap:6px;padding:22px 7px 17px;border-bottom:1px solid var(--dash-border)}
+.user-avatar{width:82px;height:82px;border-radius:50%;display:grid;place-items:center;overflow:hidden;font-size:22px}
+.user-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.user-meta{align-items:center;gap:7px}
+.user-meta strong{font-size:14px;color:var(--dash-text)}
+.user-meta span{font-size:11px;color:#fff;background:var(--rotl-red);padding:4px 11px;border-radius:16px}
+.user-meta span svg{display:none}
+.sidebar-company-name{font-size:11px;color:var(--dash-muted);margin-top:1px}
+.company-switch{display:none}
+.sidebar-divider{margin:7px 0 9px}
+.sidebar-nav{gap:3px}
+.nav-link,.logout-link{font-size:13px;padding:11px 9px;gap:12px;border-radius:9px}
+.nav-link.active{background:var(--rotl-red);color:#fff;box-shadow:0 4px 12px rgba(229,29,42,.2)}
+.nav-link.active:before{display:none}
+.sidebar-bottom{gap:4px}
+.version-pill{border:0;padding:7px 9px;margin-top:4px}
+.logout-link{margin-top:6px;border:1px solid var(--rotl-red);color:var(--rotl-red);border-radius:10px;justify-content:center;padding:12px 8px}
+.logout-link:hover{background:var(--rotl-red);color:#fff}
+.rotl-topbar{height:70px;padding:0 22px}
+.mobile-menu{display:grid;place-items:center;width:38px;height:38px;border:0;border-right:1px solid var(--dash-border);border-radius:0;background:transparent;color:var(--dash-text);padding-right:12px}
+.topbar-left{gap:14px}
+.topbar-title svg{color:var(--dash-text)}
+.topbar-company{border:1px solid var(--dash-border);border-radius:14px;padding:8px 12px}
+.theme-control{gap:9px}
+@media(max-width:760px){
+ .rotl-sidebar{width:246px;flex-basis:246px;padding:0 10px 15px}
+ .sidebar-user{padding:20px 7px 15px}
+ .rotl-topbar{height:60px;padding:0 12px}
+ .mobile-menu{display:grid}
+}
