@@ -33,8 +33,8 @@ const PREVIEW_USER = {
   firstName: 'Administrateur',
   lastName: 'ROTL',
   email: 'admin@rotl.local',
-  role: 'SUPER_ADMIN',
-  companyName: 'ROTL Entreprise',
+  role: 'ADMIN',
+  companyName: 'ROTL SARL',
   status: 'Aperçu local',
 };
 const PREVIEW_OVERVIEW = {
