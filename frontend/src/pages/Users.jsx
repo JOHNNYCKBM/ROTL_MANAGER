@@ -38,9 +38,13 @@ const PREVIEW_EMPLOYEES = [
 
 const PREVIEW_STATS = {
   pendingRequests: 5,
+  pendingRequestsChange: '+20%',
   activeEmployees: 24,
+  activeEmployeesChange: '+5%',
   activeAccounts: 26,
+  activeAccountsChange: '+8%',
   generatedMatricules: 1250,
+  generatedMatriculesChange: '+12%',
 };
 
 function readToken() {
@@ -123,15 +127,21 @@ function errorText(error) {
 }
 
 function Avatar({ person, large = false }) {
-  return <span className={`user-avatar-chip ${large ? 'large' : ''}`}>{initials(person)}</span>;
+  const image = person?.avatarUrl ?? person?.profileImageUrl ?? person?.photoUrl ?? person?.picture ?? '';
+  return <span className={`user-avatar-chip ${large ? 'large' : ''}`}>
+    {image ? <img src={image} alt={fullName(person)}/> : initials(person)}
+  </span>;
 }
 
-function MetricCard({ icon: Icon, label, value, tone }) {
+function MetricCard({ icon: Icon, label, value, tone, detail }) {
   return (
     <article className="users-metric-card">
-      <div className={`users-metric-icon ${tone}`}><Icon size={21}/></div>
-      <div className="users-metric-copy"><span>{label}</span><strong>{value ?? '—'}</strong></div>
-      <ChevronRight size={18} className="users-metric-arrow"/>
+      <div className={`users-metric-icon ${tone}`}><Icon size={23}/></div>
+      <div className="users-metric-copy">
+        <span>{label}</span><strong>{value ?? '—'}</strong>
+        {detail && <small className="users-metric-detail">{detail}</small>}
+      </div>
+      <ChevronRight size={19} className="users-metric-arrow"/>
     </article>
   );
 }
@@ -500,24 +510,23 @@ function UsersPage() {
       onLogout={logout} activePath="/users" title="Gestion des utilisateurs">
       <main className="dashboard-content users-page">
         <section className="users-hero">
-          <div className="users-hero-copy">
-            <span className="users-hero-greeting">Bonjour, {user?.firstName ?? user?.first_name ?? fullName(user).split(' ')[0]} !</span>
-            <h1>Gestion des utilisateurs</h1>
-            <p>Gérez les accès et les comptes de votre entreprise.</p>
-            <span className="users-hero-accent"/>
+          <div className="users-hero-content">
+            <div className="users-hero-icon"><Users size={48} strokeWidth={2.7}/></div>
+            <span className="users-hero-divider"/>
+            <div className="users-hero-copy">
+              <h1>Gestion des utilisateurs</h1>
+              <p>Gérez les accès et les comptes de votre entreprise.</p>
+            </div>
           </div>
-          <div className="users-hero-icon"><Users size={42}/></div>
         </section>
-
-        {preview && <div className="users-preview-banner"><AlertTriangle size={16}/><span>Mode aperçu Frontend : les données affichées sont fictives. Aucune opération métier n'est envoyée au Backend.</span></div>}
         {error && <div className="users-alert error" role="alert"><AlertTriangle size={16}/><span>{error}</span><button type="button" onClick={() => { setError(''); refreshData(false); }}>Réessayer</button></div>}
         {notice && <div className="users-alert success" role="status"><Check size={16}/><span>{notice}</span><button type="button" onClick={() => setNotice('')} aria-label="Fermer"><X size={15}/></button></div>}
 
         <section className="users-metrics-grid" aria-label="Statistiques utilisateurs">
-          <MetricCard icon={Users} label="Demandes en attente" value={loading ? '—' : formatCount(pendingCount)} tone="red"/>
-          <MetricCard icon={UserCheck} label="Employés actifs" value={loading ? '—' : formatCount(activeEmployees)} tone="dark"/>
-          <MetricCard icon={ShieldCheck} label="Comptes actifs" value={loading ? '—' : formatCount(activeAccounts)} tone="red"/>
-          <MetricCard icon={IdCard} label="Matricules générés" value={loading ? '—' : formatCount(generatedMatricules)} tone="dark"/>
+          <MetricCard icon={Users} label="Demandes en attente" value={loading ? '—' : formatCount(pendingCount)} tone="red" detail={statistics?.pendingRequestsChange ?? statistics?.pendingRequestsTrend}/>
+          <MetricCard icon={Users} label="Employés actifs" value={loading ? '—' : formatCount(activeEmployees)} tone="dark" detail={statistics?.activeEmployeesChange ?? statistics?.activeEmployeesTrend}/>
+          <MetricCard icon={ShieldCheck} label="Comptes actifs" value={loading ? '—' : formatCount(activeAccounts)} tone="red" detail={statistics?.activeAccountsChange ?? statistics?.activeAccountsTrend}/>
+          <MetricCard icon={IdCard} label="Matricules générés" value={loading ? '—' : formatCount(generatedMatricules)} tone="dark" detail={statistics?.generatedMatriculesChange ?? statistics?.generatedMatriculesTrend}/>
         </section>
 
         <section className="users-panel">
