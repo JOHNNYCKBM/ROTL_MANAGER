@@ -21,6 +21,7 @@ const PREVIEW_USER = {
   email: 'admin@rotl.local',
   role: 'ADMIN',
   companyName: 'ROTL SARL',
+  notificationsCount: 3,
 };
 
 const PREVIEW_PENDING = [
