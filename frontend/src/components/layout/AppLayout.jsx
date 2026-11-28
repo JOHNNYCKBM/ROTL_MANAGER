@@ -44,7 +44,8 @@ function Sidebar({ user, collapsed, onToggle, onLogout, activePath }) {
   const company = user?.company?.name ?? user?.companyName ?? user?.company?.legalName ?? 'ROTL SARL';
   const name = [user?.firstName ?? user?.first_name, user?.lastName ?? user?.last_name]
     .filter(Boolean).join(' ') || user?.fullName || user?.email || 'Utilisateur';
-  const role = getRole(user).replaceAll('_', ' ') || 'Utilisateur';
+  const role = (getRole(user).replaceAll('_', ' ') || 'Utilisateur')
+    .toLowerCase().replace(/\\b\\w/g, (letter) => letter.toUpperCase());
   const links = NAVIGATION.filter((item) => hasPermission(user, item));
 
   return (
@@ -89,6 +90,7 @@ function Topbar({ theme, onTheme, onMenu, user, title, activePath, onLogout }) {
   const [profileOpen, setProfileOpen] = useState(false);
   const PageIcon = activePath === '/dashboard' ? LayoutDashboard : Users;
   const profileName = [user?.firstName, user?.lastName].filter(Boolean).join(' ') || user?.fullName || user?.email || 'Utilisateur';
+  const profileImage = user?.avatarUrl ?? user?.profileImageUrl ?? user?.photoUrl ?? user?.picture ?? '';
   const company = user?.company?.name ?? user?.companyName ?? user?.company?.legalName ?? 'ROTL SARL';
   return (
     <header className="rotl-topbar">
@@ -104,7 +106,7 @@ function Topbar({ theme, onTheme, onMenu, user, title, activePath, onLogout }) {
         <button className="icon-top-button notification-button" aria-label="Notifications"><Bell size={19}/>{Number(user?.unreadNotifications ?? user?.notificationsCount ?? 0) > 0 && <b>{Number(user?.unreadNotifications ?? user?.notificationsCount)}</b>}</button>
         <div className="topbar-profile-wrap">
           <button type="button" className="topbar-profile" title={profileName} onClick={() => setProfileOpen((value) => !value)} aria-expanded={profileOpen}>
-            <span>{getInitials(user)}</span><ChevronDown size={13}/>
+            <span>{profileImage ? <img src={profileImage} alt={profileName}/> : getInitials(user)}</span><ChevronDown size={13}/>
           </button>
           {profileOpen && <div className="topbar-profile-menu">
             <strong>{profileName}</strong>
