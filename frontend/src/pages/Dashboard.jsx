@@ -6,7 +6,6 @@ import {
 } from 'lucide-react';
 import AppLayout from '../components/layout/AppLayout';
 import { dashboardService } from '../services/dashboardService';
-import '../styles/Dashboard.css';
 
 const THEME_KEY = 'rotl_dashboard_theme';
 const money = (value, currency = 'CDF') => {
