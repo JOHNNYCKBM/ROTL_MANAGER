@@ -277,9 +277,13 @@ function UsersPage() {
         const raw = unwrap(statsResult.value);
         setStatistics({
           pendingRequests: raw.pendingRequests ?? raw.pendingRequestCount ?? raw.pending ?? raw.kpis?.pendingRequests ?? 0,
+          pendingRequestsChange: raw.pendingRequestsChange ?? raw.pendingRequestsTrend ?? null,
           activeEmployees: raw.activeEmployees ?? raw.activeEmployeeCount ?? raw.employeesActive ?? raw.kpis?.activeEmployees ?? 0,
+          activeEmployeesChange: raw.activeEmployeesChange ?? raw.activeEmployeesTrend ?? null,
           activeAccounts: raw.activeAccounts ?? raw.activeAccountCount ?? raw.accountsActive ?? raw.kpis?.activeAccounts ?? 0,
+          activeAccountsChange: raw.activeAccountsChange ?? raw.activeAccountsTrend ?? null,
           generatedMatricules: raw.generatedMatricules ?? raw.totalMatricules ?? raw.matriculesGenerated ?? raw.kpis?.generatedMatricules ?? 0,
+          generatedMatriculesChange: raw.generatedMatriculesChange ?? raw.generatedMatriculesTrend ?? null,
         });
       } else failures += 1;
 
