@@ -215,6 +215,7 @@ function UsersPage() {
   const [modal, setModal] = useState(null);
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', role: 'SELLER' });
   const [busy, setBusy] = useState(false);
+  const [detailsLoading, setDetailsLoading] = useState(false);
 
   const [pendingSearch, setPendingSearch] = useState('');
   const [employeeSearch, setEmployeeSearch] = useState('');
@@ -247,6 +248,12 @@ function UsersPage() {
         usersService.getEmployees(token),
       ]);
       const [statsResult, requestsResult, employeesResult] = results;
+      const authFailure = results.find((result) => result.status === 'rejected' && result.reason?.status === 401);
+      if (authFailure) {
+        logout();
+        setError('Votre session a expiré. Veuillez vous reconnecter.');
+        return;
+      }
       let failures = 0;
 
       if (statsResult.status === 'fulfilled') {
@@ -275,7 +282,7 @@ function UsersPage() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [token, preview]);
+  }, [token, preview, logout]);
 
   useEffect(() => {
     let active = true;
@@ -297,8 +304,12 @@ function UsersPage() {
         setUser(profile?.user ?? profile);
       } catch (profileError) {
         if (!active) return;
-        if (profileError?.status === 401) logout();
-        else setError(errorText(profileError));
+        if (profileError?.status === 401) {
+          logout();
+          setLoading(false);
+          return;
+        }
+        setError(errorText(profileError));
       }
       if (active) await refreshData(true);
     }
@@ -352,6 +363,31 @@ function UsersPage() {
       role: normalizeRole(employee) === 'MANAGER' ? 'MANAGER' : 'SELLER',
     });
     setModal({ type: 'edit', person: employee });
+  }
+
+  async function openDetails(person, pending = false) {
+    setModal({ type: 'details', person, pending });
+    setDetailsLoading(!pending && !preview);
+    if (pending || preview) return;
+
+    const id = person.id ?? person.userId;
+    if (!id) {
+      setDetailsLoading(false);
+      return;
+    }
+
+    try {
+      const response = await usersService.getUser(token, id);
+      const result = unwrap(response);
+      const details = result?.user ?? result?.employee ?? result;
+      setModal((current) => current?.type === 'details' && (current.person.id ?? current.person.userId) === id
+        ? { ...current, person: details }
+        : current);
+    } catch (requestError) {
+      setError(errorText(requestError));
+    } finally {
+      setDetailsLoading(false);
+    }
   }
 
   async function submitForm(event) {
@@ -435,6 +471,21 @@ function UsersPage() {
   const generatedMatricules = statistics?.generatedMatricules ?? '—';
 
   if (!token && !PREVIEW_MODE) return <Navigate to="/login" replace/>;
+  if (!loading && user && !accessGranted) {
+    return (
+      <AppLayout user={user} theme={theme}
+        onTheme={() => setTheme((current) => current === 'light' ? 'dark' : 'light')}
+        onLogout={logout} activePath="/users" title="Gestion des utilisateurs">
+        <main className="dashboard-content users-page">
+          <section className="users-access-denied">
+            <ShieldCheck size={36}/>
+            <h1>Accès refusé</h1>
+            <p>Votre compte ne possède pas les permissions nécessaires pour gérer les utilisateurs de cette entreprise.</p>
+          </section>
+        </main>
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout user={user ?? {}} theme={theme}
@@ -484,7 +535,7 @@ function UsersPage() {
                     <td>{person.phone ?? person.telephone ?? '—'}</td>
                     <td>{dateLabel(person.requestedAt ?? person.createdAt ?? person.created_at)}</td>
                     <td><div className="users-row-actions">
-                      <button type="button" className="users-action view" onClick={() => setModal({ type: 'details', person, pending: true })}><Eye size={14}/>Voir</button>
+                      <button type="button" className="users-action view" onClick={() => openDetails(person, true)}><Eye size={14}/>Voir</button>
                       <button type="button" className="users-action approve" onClick={() => openConfirm('approve', person)}><Check size={14}/>Valider</button>
                       <button type="button" className="users-action danger" onClick={() => openConfirm('reject', person)}><Trash2 size={14}/>Rejeter</button>
                     </div></td>
@@ -527,7 +578,7 @@ function UsersPage() {
                     <td><span className={`users-status-badge ${suspended ? 'suspended' : 'active'}`}>{suspended ? 'Suspendu' : 'Actif'}</span></td>
                     <td>{dateLabel(employee.assignedAt ?? employee.createdAt ?? employee.created_at)}</td>
                     <td><div className="users-row-actions">
-                      <button type="button" className="users-action view" onClick={() => setModal({ type: 'details', person: employee, pending: false })}><Eye size={14}/>Voir</button>
+                      <button type="button" className="users-action view" onClick={() => openDetails(employee, false)}><Eye size={14}/>Voir</button>
                       <button type="button" className="users-action edit" onClick={() => openEdit(employee)}><Pencil size={14}/>Modifier</button>
                       <button type="button" className={`users-action ${suspended ? 'approve' : 'suspend'}`} onClick={() => openConfirm(suspended ? 'activate' : 'suspend', employee)}>{suspended ? <Check size={14}/> : <UserX size={14}/>} {suspended ? 'Réactiver' : 'Suspendre'}</button>
                       <button type="button" className="users-action danger" onClick={() => openConfirm('delete', employee)}><Trash2 size={14}/>Supprimer</button>
@@ -545,6 +596,7 @@ function UsersPage() {
 
       {modal?.type === 'details' && (
         <Modal title={modal.pending ? 'Détails de la demande' : 'Fiche employé'} description="Informations disponibles sur ce compte." onClose={() => setModal(null)} wide>
+          {detailsLoading ? <div className="users-loading"><span/>Chargement de la fiche employé…</div> : <>
           <div className="users-detail-profile"><Avatar person={modal.person} large/><div><strong>{fullName(modal.person)}</strong><span>{modal.person.email ?? 'Email non renseigné'}</span></div></div>
           <div className="users-detail-grid">
             <DetailLine label="Prénom" value={modal.person.firstName ?? modal.person.first_name}/>
@@ -557,6 +609,7 @@ function UsersPage() {
             <DetailLine label={modal.pending ? 'Date de demande' : "Date d'affectation"} value={dateLabel(modal.person.requestedAt ?? modal.person.assignedAt ?? modal.person.createdAt)}/>
             {!modal.pending && <DetailLine label="Dernière connexion" value={dateLabel(modal.person.lastLoginAt ?? modal.person.lastLogin)}/>}
           </div>
+          </>}
           <div className="users-modal-actions"><button type="button" className="users-btn secondary" onClick={() => setModal(null)}>Fermer</button></div>
         </Modal>
       )}
