@@ -105,7 +105,7 @@ function Topbar({ theme, onTheme, onMenu, user, title, activePath, onLogout }) {
         <button className="theme-control" onClick={onTheme} aria-label={theme === 'dark' ? 'Activer le thème clair' : 'Activer le thème sombre'}>
           <Sun size={17}/><span className={`theme-switch ${theme === 'dark' ? 'dark' : ''}`}><i/></span><Moon size={17}/>
         </button>
-        <button className="icon-top-button notification-button" aria-label="Notifications"><Bell size={19}/><b>3</b></button>
+        <button className="icon-top-button notification-button" aria-label="Notifications"><Bell size={19}/>{Number(user?.unreadNotifications ?? user?.notificationsCount ?? 0) > 0 && <b>{Number(user?.unreadNotifications ?? user?.notificationsCount)}</b>}</button>
         <div className="topbar-profile-wrap">
           <button type="button" className="topbar-profile" title={profileName} onClick={() => setProfileOpen((value) => !value)} aria-expanded={profileOpen}>
             <span>{getInitials(user)}</span><ChevronDown size={13}/>
