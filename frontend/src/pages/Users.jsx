@@ -104,6 +104,12 @@ function dateLabel(value) {
   }).format(parsed);
 }
 
+function formatCount(value) {
+  if (value === null || value === undefined || value === '') return '—';
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? new Intl.NumberFormat('fr-FR').format(numeric) : String(value);
+}
+
 function matriculeOf(person) {
   return person?.matricule ?? person?.employeeNumber ?? person?.registrationNumber ?? '—';
 }
@@ -507,10 +513,10 @@ function UsersPage() {
         {notice && <div className="users-alert success" role="status"><Check size={16}/><span>{notice}</span><button type="button" onClick={() => setNotice('')} aria-label="Fermer"><X size={15}/></button></div>}
 
         <section className="users-metrics-grid" aria-label="Statistiques utilisateurs">
-          <MetricCard icon={Users} label="Demandes en attente" value={loading ? '—' : pendingCount} tone="red"/>
-          <MetricCard icon={UserCheck} label="Employés actifs" value={loading ? '—' : activeEmployees} tone="dark"/>
-          <MetricCard icon={ShieldCheck} label="Comptes actifs" value={loading ? '—' : activeAccounts} tone="red"/>
-          <MetricCard icon={IdCard} label="Matricules générés" value={loading ? '—' : generatedMatricules} tone="dark"/>
+          <MetricCard icon={Users} label="Demandes en attente" value={loading ? '—' : formatCount(pendingCount)} tone="red"/>
+          <MetricCard icon={UserCheck} label="Employés actifs" value={loading ? '—' : formatCount(activeEmployees)} tone="dark"/>
+          <MetricCard icon={ShieldCheck} label="Comptes actifs" value={loading ? '—' : formatCount(activeAccounts)} tone="red"/>
+          <MetricCard icon={IdCard} label="Matricules générés" value={loading ? '—' : formatCount(generatedMatricules)} tone="dark"/>
         </section>
 
         <section className="users-panel">
