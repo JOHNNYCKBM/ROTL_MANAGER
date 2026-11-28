@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import {
-  Activity, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3,
+  Check, ChevronLeft, ChevronRight, Clock3,
   Copy, Eye, IdCard, Pencil, Plus, RefreshCw, Search, ShieldCheck,
   Trash2, UserCheck, Users, UserX, X, AlertTriangle,
 } from 'lucide-react';
