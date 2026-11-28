@@ -79,7 +79,7 @@ function fullName(person) {
 }
 
 function initials(person) {
-  return fullName(person).split(/\\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase();
+  return fullName(person).split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase();
 }
 
 function roleLabel(role) {
