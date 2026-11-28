@@ -5,6 +5,7 @@ import {
   PanelLeftClose, Settings, ShieldCheck, ShoppingCart, Sun, Users, Wallet,
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
+import '../../styles/Dashboard.css';
 
 const NAVIGATION = [
   { label: 'Tableau de bord', icon: LayoutDashboard, path: '/dashboard', permissions: ['dashboard.read'], roles: ['SUPER_ADMIN', 'ADMIN'] },
