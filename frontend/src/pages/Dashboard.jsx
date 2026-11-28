@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import {
   Activity, Building2, CalendarDays, ChartNoAxesCombined, Clock3,
@@ -65,7 +65,7 @@ const PREVIEW_OVERVIEW = {
   ],
 };
 
-function Hero({ user, theme }) {
+function Hero({ user }) {
   const firstName = user?.firstName ?? user?.first_name ?? user?.fullName?.split(' ')[0] ?? 'Utilisateur';
   return <section className="dashboard-hero" aria-label="Bienvenue">
     <div className="hero-copy"><p className="hero-eyebrow">BIENVENUE SUR ROTL MANAGER</p><h1>Bonjour, <span>{firstName} !</span></h1><p>Voici un aperçu de l'activité de votre entreprise aujourd'hui.</p><div className="hero-underline"/></div>
@@ -168,7 +168,7 @@ function Dashboard() {
       <main className="dashboard-content">
         <div className="page-heading"><div><span className="page-kicker">VUE D'ENSEMBLE</span><h2>Tableau de bord</h2><p>Suivez les indicateurs essentiels de votre entreprise.</p></div><div className="heading-company">{companyName}</div></div>
         {error && <div className="dashboard-alert" role="status">{error}</div>}
-        <Hero user={user ?? {}} theme={theme}/>
+        <Hero user={user ?? {}}/>
         <section className="kpi-grid" aria-label="Indicateurs principaux">
           <KpiCard icon={ShoppingCart} title="Ventes du jour" value={money(kpis.todaySales?.value ?? kpis.todaySales, kpis.todaySales?.currency ?? 'CDF')} tone="red"/>
           <KpiCard icon={Package} title="Produits en stock" value={number(kpis.productsInStock ?? kpis.stockProducts)} tone="gold"/>
@@ -182,7 +182,6 @@ function Dashboard() {
           <article className="panel system-panel"><div className="panel-heading"><div><ShieldCheck size={19}/><h3>Informations système</h3></div></div><div className="system-rows"><p><Building2 size={16}/>Entreprise <b>{companyName || '—'}</b></p><p><Users size={16}/>Utilisateur <b>{displayName}</b></p><p><Clock3 size={16}/>Heure locale <b>{timeLabel()}</b></p><p><ShieldCheck size={16}/>Statut du compte <b className="status-ok">{user?.status ?? 'Connecté'}</b></p></div></article>
         </section>
         {loading && <div className="dashboard-loading"><span/> Chargement des données du tableau de bord…</div>}
-        <footer className="dashboard-footer">ROTL MANAGER <span>•</span> Version 1.0.0</footer>
       </main>
     </AppLayout>;
 }
