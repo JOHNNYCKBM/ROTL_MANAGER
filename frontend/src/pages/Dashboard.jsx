@@ -34,6 +34,7 @@ const PREVIEW_USER = {
   email: 'admin@rotl.local',
   role: 'ADMIN',
   companyName: 'ROTL SARL',
+  notificationsCount: 3,
   status: 'Aperçu local',
 };
 const PREVIEW_OVERVIEW = {
