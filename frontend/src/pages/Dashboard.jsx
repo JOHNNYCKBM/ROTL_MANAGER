@@ -124,7 +124,7 @@ function Dashboard() {
     if (!token && PREVIEW_MODE) {
       setUser(PREVIEW_USER);
       setOverview(PREVIEW_OVERVIEW);
-      setError('Mode aperçu Frontend : les données affichées sont fictives et ne proviennent pas du Backend.');
+      setError('');
       setLoading(false);
       return;
     }
