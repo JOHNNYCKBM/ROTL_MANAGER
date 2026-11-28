@@ -36,7 +36,7 @@ function getInitials(user) {
   const first = user?.firstName ?? user?.first_name ?? '';
   const last = user?.lastName ?? user?.last_name ?? '';
   const full = [first, last].filter(Boolean).join(' ') || user?.fullName || user?.email || 'U';
-  return full.split(/\\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase();
+  return full.split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase();
 }
 
 function Sidebar({ user, collapsed, onToggle, onLogout, activePath }) {
