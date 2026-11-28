@@ -88,13 +88,16 @@ function Sidebar({ user, collapsed, onToggle, onLogout, activePath }) {
   );
 }
 
-function Topbar({ theme, onTheme, onMenu, user, title }) {
+function Topbar({ theme, onTheme, onMenu, user, title, activePath, onLogout }) {
+  const [profileOpen, setProfileOpen] = useState(false);
+  const PageIcon = activePath === '/dashboard' ? LayoutDashboard : Users;
+  const profileName = [user?.firstName, user?.lastName].filter(Boolean).join(' ') || user?.fullName || user?.email || 'Utilisateur';
   const company = user?.company?.name ?? user?.companyName ?? user?.company?.legalName ?? 'ROTL SARL';
   return (
     <header className="rotl-topbar">
       <div className="topbar-left">
         <button className="mobile-menu" onClick={onMenu} aria-label="Ouvrir ou réduire la navigation"><Menu size={21}/></button>
-        <div className="topbar-title"><Users size={20}/><span>{title}</span></div>
+        <div className="topbar-title"><PageIcon size={20}/><span>{title}</span></div>
       </div>
       <div className="topbar-actions">
         <div className="topbar-company"><Building2 size={16}/><span>{company}</span><ChevronDown size={14}/></div>
@@ -102,8 +105,15 @@ function Topbar({ theme, onTheme, onMenu, user, title }) {
           <Sun size={17}/><span className={`theme-switch ${theme === 'dark' ? 'dark' : ''}`}><i/></span><Moon size={17}/>
         </button>
         <button className="icon-top-button notification-button" aria-label="Notifications"><Bell size={19}/><b>3</b></button>
-        <div className="topbar-profile" title={[user?.firstName, user?.lastName].filter(Boolean).join(' ')}>
-          <span>{getInitials(user)}</span><ChevronDown size={13}/>
+        <div className="topbar-profile-wrap">
+          <button type="button" className="topbar-profile" title={profileName} onClick={() => setProfileOpen((value) => !value)} aria-expanded={profileOpen}>
+            <span>{getInitials(user)}</span><ChevronDown size={13}/>
+          </button>
+          {profileOpen && <div className="topbar-profile-menu">
+            <strong>{profileName}</strong>
+            <small>{getRole(user).replaceAll('_', ' ') || 'Utilisateur'}</small>
+            <button type="button" onClick={onLogout}><LogOut size={14}/>Déconnexion</button>
+          </div>}
         </div>
       </div>
     </header>
@@ -125,7 +135,7 @@ export default function AppLayout({ user, theme, onTheme, onLogout, activePath, 
       <Sidebar user={user ?? {}} collapsed={collapsed} onToggle={() => setCollapsed((value) => !value)}
         onLogout={onLogout} activePath={activePath}/>
       <div className="dashboard-main">
-        <Topbar theme={theme} onTheme={onTheme} onMenu={handleMenu} user={user ?? {}} title={title}/>
+        <Topbar theme={theme} onTheme={onTheme} onMenu={handleMenu} onLogout={onLogout} user={user ?? {}} title={title} activePath={activePath}/>
         {children}
         <footer className="dashboard-footer">ROTL MANAGER <span>•</span> Version 1.0.0</footer>
       </div>
